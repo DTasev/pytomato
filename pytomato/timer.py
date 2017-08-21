@@ -20,6 +20,10 @@ class Timer(object):
 
         self.entries.initialise()
 
+        if parameters.listAndExit:
+            self.entries.listEntires()
+            return
+
         # convert to minutes
         targetTime = parameters.duration
         self.name = parameters.name
@@ -48,6 +52,8 @@ class Timer(object):
         # if anything happens try to end and save out the file
         except KeyboardInterrupt:
             print("Interripting timer and saving entry.")
+        except SystemExit:
+            print("System exiting, saving entry.")
 
         endDateTime = datetime.datetime.now()
         self.entries.add(startDateTime, endDateTime, elapsedTime, targetTime)

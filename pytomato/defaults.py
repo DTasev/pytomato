@@ -22,3 +22,4 @@ class DefaultRun:
     name = DEFAULT_TOMATO_NAME
     clean = False
     runType = None
+    listAndExit = False

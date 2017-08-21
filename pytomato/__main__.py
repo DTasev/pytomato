@@ -60,11 +60,19 @@ def setupParser():
         action='store_true',
         help="Do a break run. Default break is 5 minutes."
     )
+
     parser.add_argument(
         "-lb",
         "--long-break",
         action='store_true',
         help="Do a break run. Default break is 5 minutes."
+    )
+
+    parser.add_argument(
+        "-t",
+        "--list",
+        action='store_true',
+        help="List the entires and exit."
     )
 
     return parser

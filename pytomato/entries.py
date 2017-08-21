@@ -10,6 +10,7 @@ BACKUP_TIMER_PICKLE_FILE = os.path.expanduser("~/.pytomato.bak")
 class Entries(object):
     def __init__(self, timer):
         self.timer = timer
+        self.formattedEntries = None
 
     def initialise(self):
         if os.path.isfile(DEFAULT_TIMER_PICKLE_FILE):
@@ -17,17 +18,21 @@ class Entries(object):
         else:
             self.past_entries = []
 
-        entries = map(lambda entry: "{} T:{} S: {} - {} elapsed: {}, target: {}min".format(
-            entry["name"],
-            entry["type"],
-            entry["entry"]["entryStart"].strftime("%Y-%m-%d %H:%M"),
-            entry["entry"]["entryEnd"].strftime("%H:%M"),
-            formatToHHMM(entry["entry"]["elapsedTime"]),
-            formatToHHMM(entry["entry"]["targetTime"])),
-            self.past_entries)
+        self.listEntires()
 
-        if entries:
-            for e in entries:
+    def listEntires(self):
+        if not self.formattedEntries:
+            self.formattedEntries = map(lambda entry: "{} T:{} S: {} - {} elapsed: {}, target: {}min".format(
+                entry["name"],
+                entry["type"],
+                entry["entry"]["entryStart"].strftime("%Y-%m-%d %H:%M"),
+                entry["entry"]["entryEnd"].strftime("%H:%M"),
+                formatToHHMM(entry["entry"]["elapsedTime"]),
+                formatToHHMM(entry["entry"]["targetTime"])),
+                self.past_entries)
+
+        if self.formattedEntries:
+            for e in self.formattedEntries:
                 print(e)
 
     def clean(self):
