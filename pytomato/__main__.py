@@ -35,7 +35,7 @@ def setupParser():
     )
 
     parser.add_argument(
-        "-d",
+        "-t",
         "--duration",
         required=False,
         type=int,
@@ -69,10 +69,17 @@ def setupParser():
     )
 
     parser.add_argument(
-        "-t",
+        "-i",
         "--list",
         action='store_true',
         help="List the entires and exit."
+    )
+
+    parser.add_argument(
+        "-d",
+        "--delete",
+        type=int,
+        help="Delete the entry and exit."
     )
 
     return parser
@@ -114,6 +121,9 @@ def setUpRunParameters(parameters, args):
         parameters.runType = DEFAULT_TOMATO_TYPE
 
     parameters.clean = args.clean
+    parameters.listAndExit = args.list
+    parameters.delete = args.delete
+
     return parameters
 
 

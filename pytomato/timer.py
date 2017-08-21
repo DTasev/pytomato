@@ -17,11 +17,19 @@ class Timer(object):
     def run(self, parameters: DefaultRun):
         if parameters.clean:
             self.entries.clean()
+            return
 
         self.entries.initialise()
 
         if parameters.listAndExit:
-            self.entries.listEntires()
+            return
+
+        # check if not none, because single integers get cast to booleans..
+        if parameters.delete is not None:
+            self.entries.deleteEntry(parameters.delete)
+            print("List state after deletion")
+            self.entries.listEntries()
+            self.entries.save()
             return
 
         # convert to minutes

@@ -18,8 +18,9 @@ DEFAULT_BREAK_TYPE = "Break"
 
 
 class DefaultRun:
-    duration = DEFAULT_SHORT_TOMATO_DURATION
-    name = DEFAULT_TOMATO_NAME
-    clean = False
     runType = None
+    name = DEFAULT_TOMATO_NAME
+    duration = DEFAULT_SHORT_TOMATO_DURATION
+    clean = False
     listAndExit = False
+    delete = None
