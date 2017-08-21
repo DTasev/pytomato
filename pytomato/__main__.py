@@ -49,7 +49,7 @@ def setupParser():
     )
 
     parser.add_argument(
-        "--gui",
+        "--cli",
         action='store_true',
         help="Clear the tomato past entries. This will delete the ~/.pytomato file."
     )
@@ -119,12 +119,12 @@ def setUpRunParameters(parameters, args):
 
 def main(parameters, args):
 
-    if args.gui:
-        import guitimer
-        timer = guitimer.GUITimer()
-    else:
+    if args.cli:
         import timer
         timer = timer.Timer()
+    else:
+        import guitimer
+        timer = guitimer.GUITimer()
 
     timer.run(parameters)
 
