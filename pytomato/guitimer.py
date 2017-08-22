@@ -10,7 +10,7 @@ class GUITimer(timer.Timer):
         super().__init__()
         self.app = Qt.QApplication(sys.argv)
 
-    def notifyUser(self, elapsedTime, targetTime):
+    def notifyUser(self):
         systemtray_icon = Qt.QSystemTrayIcon(self.app)
         systemtray_icon.show()
         systemtray_icon.showMessage('Going Overtime!', self.notifyString, Qt.QSystemTrayIcon.Warning)
