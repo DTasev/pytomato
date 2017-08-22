@@ -141,8 +141,13 @@ def main(parameters, args):
         import timer
         timer = timer.Timer()
     else:
-        import guitimer
-        timer = guitimer.GUITimer()
+        try:
+            raise ImportError()
+            import guitimer
+            timer = guitimer.GUITimer()
+        except ImportError as exc:
+            print("Could not create GUI timer, you need PyQt5 installed! Or run with --cli for console mode.")
+            return
 
     timer.run(parameters)
 
