@@ -51,7 +51,7 @@ def setupParser():
     parser.add_argument(
         "--cli",
         action='store_true',
-        help="Clear the tomato past entries. This will delete the ~/.pytomato file."
+        help="Run the timer without importing any of the GUI packages."
     )
 
     parser.add_argument(
@@ -104,7 +104,11 @@ def setUpRunParameters(parameters, args):
         if args.duration:
             parameters.duration = args.duration
 
-        parameters.name = DEFAULT_BREAK_NAME
+        if args.name:
+            parameters.name = args.name
+        else:
+            parameters.name = DEFAULT_BREAK_NAME
+
         parameters.runType = DEFAULT_BREAK_TYPE
 
     else:
@@ -117,7 +121,11 @@ def setUpRunParameters(parameters, args):
         if args.duration:
             parameters.duration = args.duration
 
-        parameters.name = DEFAULT_TOMATO_NAME
+        if args.name:
+            parameters.name = args.name
+        else:
+            parameters.name = DEFAULT_TOMATO_NAME
+
         parameters.runType = DEFAULT_TOMATO_TYPE
 
     parameters.clean = args.clean
@@ -140,7 +148,6 @@ def main(parameters, args):
 
 
 if __name__ == '__main__':
-
     parser = setupParser()
     args = parser.parse_args()
 
