@@ -142,7 +142,6 @@ def main(parameters, args):
         timer = timer.Timer()
     else:
         try:
-            raise ImportError()
             import guitimer
             timer = guitimer.GUITimer()
         except ImportError as exc:
