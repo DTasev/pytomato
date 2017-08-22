@@ -49,7 +49,7 @@ class Timer(object):
         try:
             while True:
                 self.updateVisuals(elapsedTime, targetTime, targetTimeString)
-                time.sleep(0.9)
+                time.sleep(0.95)
                 elapsedTime += 1
 
                 # warn the user only when we're over the target time and we haven't previously notified them
