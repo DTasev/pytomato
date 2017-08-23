@@ -64,23 +64,7 @@ def set_up_run_parameters(parameters: RunParameters, args: ArgumentParser) -> Ru
     return parameters
 
 
-def main(parameters: RunParameters, args: ArgumentParser):
-
-    if args.cli:  # type: ignore
-        import timer
-        t = timer.Timer(parameters)
-    else:
-        try:
-            import guitimer
-            t = guitimer.GUITimer(parameters)
-        except ImportError as exc:
-            print("Could not create GUI timer, you need PyQt5 installed! Or run with --cli for console mode.")
-            return
-
-    t.run(parameters)
-
-
-if __name__ == '__main__':
+def main():
     parser = setupParser()
     args = parser.parse_args()
 
@@ -88,3 +72,16 @@ if __name__ == '__main__':
     parameters = set_up_run_parameters(parameters, args)
 
     main(parameters, args)
+
+    if args.cli:  # type: ignore
+        from timer import Timer
+        timer = Timer(parameters)
+    else:
+        try:
+            from guitimer import GUITimer
+            timer = GUITimer(parameters)
+        except ImportError as exc:
+            print("Could not create GUI timer, you need PyQt5 installed! Or run with --cli for console mode.")
+            return
+
+    timer.run()

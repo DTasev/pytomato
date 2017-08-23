@@ -2,7 +2,7 @@ import sys
 
 from PyQt5 import Qt
 
-import timer
+from pytomato import timer
 
 
 class GUITimer(timer.Timer):

@@ -1,4 +1,4 @@
-from conf import TOMATO_NAME, SHORT_TOMATO_DURATION, DEFAULT_PROJECT_NAME
+from pytomato.conf import TOMATO_NAME, SHORT_TOMATO_DURATION, DEFAULT_PROJECT_NAME
 
 
 class RunParameters:

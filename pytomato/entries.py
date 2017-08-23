@@ -2,9 +2,9 @@ import os
 import pickle
 import datetime
 
-from utility import formatToHHMM
+from pytomato.utility import formatToHHMM
 
-from conf import PYTOMATO_PROJECTS_DIR, PROJECT_EXTENSION
+from pytomato.conf import PYTOMATO_PROJECTS_DIR, PROJECT_EXTENSION
 
 
 class Entries(object):
@@ -27,8 +27,6 @@ class Entries(object):
             self.past_entries = pickle.load(open(self.timer_pickle_file, 'rb'))
         else:
             self.past_entries = []
-
-        self.listEntries()
 
     def listEntries(self):
         today = datetime.datetime.now().strftime("%Y%m%d")

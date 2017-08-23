@@ -3,3 +3,4 @@ flake8
 autopep8
 pyqt5
 nose
+mock

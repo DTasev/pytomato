@@ -1,43 +1,45 @@
 import datetime
 import time
 
-import entries
-from conf import BREAK_TYPE, SHORT_TOMATO_DURATION, TOMATO_TYPE
-from run_parameters import RunParameters
-from soundboard import SoundBoard
-from utility import formatToHHMM
+from pytomato import entries
+from pytomato.conf import BREAK_TYPE, SHORT_TOMATO_DURATION, TOMATO_TYPE
+from pytomato.run_parameters import RunParameters
+from pytomato.soundboard import SoundBoard
+from pytomato.utility import formatToHHMM
 
 
 class Timer(object):
-    def __init__(self, parameters):
+    def __init__(self, parameters: RunParameters) -> None:
         self.name = parameters.name
         self.runType = parameters.runType
         self.project_name = parameters.project_name
-        self.entries = entries.Entries(self, self.project_name)
+        self.parameters = parameters
 
+        self.entries = entries.Entries(self, self.project_name)
         self.notifyString = None
         self.soundboard = SoundBoard(parameters.mute)
 
-    def run(self, parameters: RunParameters):
-        if parameters.clean:
+    def run(self):
+        if self.parameters.clean:
             self.entries.clean()
             return
 
         self.entries.initialise()
+        self.entries.listEntries()
 
-        if parameters.listAndExit:
+        if self.parameters.listAndExit:
             return
 
         # check if not none, because single integers get cast to booleans..
-        if parameters.delete is not None:
-            self.entries.deleteEntry(parameters.delete)
+        if self.parameters.delete is not None:
+            self.entries.deleteEntry(self.parameters.delete)
             print("List state after deletion")
             self.entries.listEntries()
             self.entries.save()
             return
 
         # convert to minutes
-        targetTime = parameters.duration
+        targetTime = self.parameters.duration
 
         self.createMessagesForRun(self.runType, targetTime)
 
@@ -57,7 +59,7 @@ class Timer(object):
                 elapsedTime += 1
 
                 # warn the user only when we're over the target time and we haven't previously notified them
-                if not userNotified and elapsedTime > targetTime:
+                if not userNotified and elapsedTime >= targetTime:
                     self.notify()
                     userNotified = True
 
