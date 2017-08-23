@@ -16,7 +16,7 @@ class Entries(object):
         self.formattedEntries = None
 
         self.project_name = project_name + PROJECT_EXTENSION
-        self.project_directory = os.path.expanduser(PYTOMATO_PROJECTS_DIR)
+        self.project_directory = PYTOMATO_PROJECTS_DIR
 
         self.timer_pickle_file = os.path.join(self.project_directory, self.project_name)
         # this is used to save first and then overwrite the original to not corrupt the file on save
@@ -82,6 +82,7 @@ class Entries(object):
         )
 
     def save(self):
+        print("Saving in", self.project_directory)
         if not os.path.isdir(self.project_directory):
             os.mkdir(self.project_directory)
 
