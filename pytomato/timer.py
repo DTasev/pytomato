@@ -2,17 +2,18 @@ import datetime
 import time
 
 import entries
-from defaults import (DEFAULT_BREAK_TYPE, DEFAULT_SHORT_TOMATO_DURATION,
-                      DEFAULT_TOMATO_TYPE, DefaultRun)
+from defaults import (BREAK_TYPE, SHORT_TOMATO_DURATION,
+                      TOMATO_TYPE, DefaultRun)
 from utility import formatToHHMM
 
 
 class Timer(object):
-    def __init__(self):
-        self.name = None
-        self.runType = None
+    def __init__(self, parameters):
+        self.name = parameters.name
+        self.runType = parameters.runType
+        self.entries = entries.Entries(self, parameters.project_name)
+
         self.notifyString = None
-        self.entries = entries.Entries(self)
 
     def run(self, parameters: DefaultRun):
         if parameters.clean:
@@ -77,12 +78,12 @@ class Timer(object):
         self.notifyUser()
 
     def createMessagesForRun(self, runType, targetTime):
-        if runType == DEFAULT_BREAK_TYPE:
+        if runType == BREAK_TYPE:
             self.notifyString = "Your break was {0} minutes long and is now over!".format(targetTime // 60)
 
-        elif runType == DEFAULT_TOMATO_TYPE:
+        elif runType == TOMATO_TYPE:
             self.notifyString = "Going Overtime! You should take a {0} break.".format(
-                "5 minute" if targetTime <= DEFAULT_SHORT_TOMATO_DURATION else "15 minute")
+                "5 minute" if targetTime <= SHORT_TOMATO_DURATION else "15 minute")
 
     def notifyUser(self):
         print(self.notifyString)

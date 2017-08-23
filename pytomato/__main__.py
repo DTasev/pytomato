@@ -1,88 +1,34 @@
-import argparse
-
-from defaults import (DEFAULT_BREAK_NAME, DEFAULT_BREAK_TYPE,
-                      DEFAULT_LONG_BREAK_DURATION,
-                      DEFAULT_LONG_TOMATO_DURATION,
-                      DEFAULT_SHORT_BREAK_DURATION,
-                      DEFAULT_SHORT_TOMATO_DURATION, DEFAULT_TOMATO_NAME,
-                      DEFAULT_TOMATO_TYPE, DefaultRun)
+from defaults import (BREAK_NAME, BREAK_TYPE, LONG_BREAK_DURATION,
+                      LONG_TOMATO_DURATION, SHORT_BREAK_DURATION,
+                      SHORT_TOMATO_DURATION, TOMATO_NAME, TOMATO_TYPE)
+from run_parameters import RunParameters
+from argument_parser import setupParser
 
 
-def setupParser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-n",
-        "--name",
-        required=False,
-        type=str,
-        help="Help of the timer run."
-    )
+def _set_up_break_or_tomato(args, short_duration, long_duration, default_name, run_type):
+    """
+    :param args: The argument parser
+    :param short_dur: Short duration for the run type
+    :param long_dur: Long duration for the run type
+    :param custom_dur: Custom duration provided by the user
+    :param custom_name: Custom name provided by the user
+    :param run_type: The run type
+    """
+    if args.short_break:
+        parameters.duration = short_duration
 
-    parser.add_argument(
-        "-s",
-        "--short",
-        required=False,
-        action='store_true',
-        help="Run a short tomato run, 25 minutes."
-    )
+    if args.long_break:
+        parameters.duration = long_duration
 
-    parser.add_argument(
-        "-l",
-        "--long",
-        required=False,
-        action='store_true',
-        help="Run a short tomato run, 50 minutes."
-    )
+    if args.duration:
+        parameters.duration = args.duration
 
-    parser.add_argument(
-        "-t",
-        "--duration",
-        required=False,
-        type=int,
-        help="Set a custom duration as the timer. Input expects seconds"
-    )
+    if args.name:
+        parameters.name = args.name
+    else:
+        parameters.name = default_name
 
-    parser.add_argument(
-        "--clean",
-        action='store_true',
-        help="Clear the tomato past entries. This will delete the ~/.pytomato file."
-    )
-
-    parser.add_argument(
-        "--cli",
-        action='store_true',
-        help="Run the timer without importing any of the GUI packages."
-    )
-
-    parser.add_argument(
-        "-b",
-        "--short-break",
-        action='store_true',
-        help="Do a break run. Default break is 5 minutes."
-    )
-
-    parser.add_argument(
-        "-lb",
-        "--long-break",
-        action='store_true',
-        help="Do a break run. Default break is 5 minutes."
-    )
-
-    parser.add_argument(
-        "-i",
-        "--list",
-        action='store_true',
-        help="List the entires and exit."
-    )
-
-    parser.add_argument(
-        "-d",
-        "--delete",
-        type=int,
-        help="Delete the entry and exit."
-    )
-
-    return parser
+    parameters.runType = run_type
 
 
 def setUpRunParameters(parameters, args):
@@ -95,38 +41,16 @@ def setUpRunParameters(parameters, args):
         args.short = True
 
     if args.short_break or args.long_break:
-        if args.short_break:
-            parameters.duration = DEFAULT_SHORT_BREAK_DURATION
-
-        if args.long_break:
-            parameters.duration = DEFAULT_LONG_BREAK_DURATION
-
-        if args.duration:
-            parameters.duration = args.duration
-
-        if args.name:
-            parameters.name = args.name
-        else:
-            parameters.name = DEFAULT_BREAK_NAME
-
-        parameters.runType = DEFAULT_BREAK_TYPE
+        _set_up_break_or_tomato(args, SHORT_BREAK_DURATION, LONG_BREAK_DURATION,
+                                BREAK_NAME, BREAK_TYPE)
 
     else:
-        if args.short:
-            parameters.duration = DEFAULT_SHORT_TOMATO_DURATION
+        _set_up_break_or_tomato(args, SHORT_TOMATO_DURATION, LONG_TOMATO_DURATION,
+                                TOMATO_NAME, TOMATO_TYPE)
 
-        if args.long:
-            parameters.duration = DEFAULT_LONG_TOMATO_DURATION
-
-        if args.duration:
-            parameters.duration = args.duration
-
-        if args.name:
-            parameters.name = args.name
-        else:
-            parameters.name = DEFAULT_TOMATO_NAME
-
-        parameters.runType = DEFAULT_TOMATO_TYPE
+    if args.project:
+        # this will have the default value from conf.py if not changed here
+        parameters.project_name = args.project
 
     parameters.clean = args.clean
     parameters.listAndExit = args.list
@@ -139,15 +63,14 @@ def main(parameters, args):
 
     if args.cli:
         import timer
-        timer = timer.Timer()
+        timer = timer.Timer(parameters)
     else:
         try:
             import guitimer
-            timer = guitimer.GUITimer()
+            timer = guitimer.GUITimer(parameters)
         except ImportError as exc:
             print("Could not create GUI timer, you need PyQt5 installed! Or run with --cli for console mode.")
             return
-
     timer.run(parameters)
 
 
@@ -155,7 +78,7 @@ if __name__ == '__main__':
     parser = setupParser()
     args = parser.parse_args()
 
-    parameters = DefaultRun()
+    parameters = RunParameters()
     parameters = setUpRunParameters(parameters, args)
 
     main(parameters, args)

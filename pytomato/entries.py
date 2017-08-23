@@ -4,18 +4,24 @@ import datetime
 
 from utility import formatToHHMM
 
-DEFAULT_TIMER_PICKLE_FILE = os.path.expanduser("~/.pytomato")
-BACKUP_TIMER_PICKLE_FILE = os.path.expanduser("~/.pytomato.bak")
+from defaults import PYTOMATO_PROJECTS_DIR, PROJECT_EXTENSION
 
 
 class Entries(object):
-    def __init__(self, timer):
+    def __init__(self, timer, project_name):
+        """
+        :param project_name: This will be used as the file name inside the projects directory.
+        """
         self.timer = timer
         self.formattedEntries = None
 
+        project_name += PROJECT_EXTENSION
+        self.timer_pickle_file = os.path.join(os.path.expanduser(PYTOMATO_PROJECTS_DIR), project_name)
+        self.backup_timer_pickle_file = self.timer_pickle_file + ".bak"
+
     def initialise(self):
-        if os.path.isfile(DEFAULT_TIMER_PICKLE_FILE):
-            self.past_entries = pickle.load(open(DEFAULT_TIMER_PICKLE_FILE, 'rb'))
+        if os.path.isfile(self.timer_pickle_file):
+            self.past_entries = pickle.load(open(self.timer_pickle_file, 'rb'))
         else:
             self.past_entries = []
 
@@ -52,9 +58,9 @@ class Entries(object):
         If the file is not found we silently fail
         """
 
-        print("Deleting entries file", DEFAULT_TIMER_PICKLE_FILE)
+        print("Deleting entries file", self.timer_pickle_file)
         try:
-            os.remove(DEFAULT_TIMER_PICKLE_FILE)
+            os.remove(self.timer_pickle_file)
         except:
             print("File not found, nothing is changed.")
 
@@ -75,9 +81,9 @@ class Entries(object):
 
     def save(self):
         # don't save in original file, save in a backup copy
-        pickle.dump(self.past_entries, open(BACKUP_TIMER_PICKLE_FILE, 'wb'))
+        pickle.dump(self.past_entries, open(self.backup_timer_pickle_file, 'wb'))
         # then overwrite the original
-        os.replace(BACKUP_TIMER_PICKLE_FILE, DEFAULT_TIMER_PICKLE_FILE)
+        os.replace(self.backup_timer_pickle_file, self.timer_pickle_file)
 
     def deleteEntry(self, id):
         try:
