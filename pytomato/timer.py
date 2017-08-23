@@ -2,7 +2,7 @@ import datetime
 import time
 
 import entries
-from defaults import BREAK_TYPE, SHORT_TOMATO_DURATION, TOMATO_TYPE
+from conf import BREAK_TYPE, SHORT_TOMATO_DURATION, TOMATO_TYPE
 from run_parameters import RunParameters
 from soundboard import SoundBoard
 from utility import formatToHHMM

@@ -1,6 +1,6 @@
-from defaults import (BREAK_NAME, BREAK_TYPE, LONG_BREAK_DURATION,
-                      LONG_TOMATO_DURATION, SHORT_BREAK_DURATION,
-                      SHORT_TOMATO_DURATION, TOMATO_NAME, TOMATO_TYPE)
+from conf import (BREAK_NAME, BREAK_TYPE, LONG_BREAK_DURATION,
+                  LONG_TOMATO_DURATION, SHORT_BREAK_DURATION,
+                  SHORT_TOMATO_DURATION, TOMATO_NAME, TOMATO_TYPE)
 from run_parameters import RunParameters
 from argument_parser import setupParser
 from argparse import ArgumentParser

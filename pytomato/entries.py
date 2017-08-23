@@ -4,7 +4,7 @@ import datetime
 
 from utility import formatToHHMM
 
-from defaults import PYTOMATO_PROJECTS_DIR, PROJECT_EXTENSION
+from conf import PYTOMATO_PROJECTS_DIR, PROJECT_EXTENSION
 
 
 class Entries(object):
