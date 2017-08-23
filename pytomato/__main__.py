@@ -71,6 +71,7 @@ def main(parameters, args):
         except ImportError as exc:
             print("Could not create GUI timer, you need PyQt5 installed! Or run with --cli for console mode.")
             return
+
     timer.run(parameters)
 
 

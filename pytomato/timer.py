@@ -2,8 +2,8 @@ import datetime
 import time
 
 import entries
-from defaults import (BREAK_TYPE, SHORT_TOMATO_DURATION,
-                      TOMATO_TYPE, DefaultRun)
+from defaults import BREAK_TYPE, SHORT_TOMATO_DURATION, TOMATO_TYPE
+from run_parameters import RunParameters
 from utility import formatToHHMM
 
 
@@ -11,11 +11,12 @@ class Timer(object):
     def __init__(self, parameters):
         self.name = parameters.name
         self.runType = parameters.runType
-        self.entries = entries.Entries(self, parameters.project_name)
+        self.project_name = parameters.project_name
+        self.entries = entries.Entries(self, self.project_name)
 
         self.notifyString = None
 
-    def run(self, parameters: DefaultRun):
+    def run(self, parameters: RunParameters):
         if parameters.clean:
             self.entries.clean()
             return
@@ -35,12 +36,12 @@ class Timer(object):
 
         # convert to minutes
         targetTime = parameters.duration
-        self.name = parameters.name
-        self.runType = parameters.runType
 
         self.createMessagesForRun(self.runType, targetTime)
 
-        print(self.name, "target time", targetTime // 60, "minutes")
+        print("Project:", self.project_name)
+        print("Entry name:", self.name)
+        print("Target time", targetTime // 60, "minutes")
 
         startDateTime = datetime.datetime.now()
         elapsedTime = 0

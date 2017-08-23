@@ -15,8 +15,11 @@ class Entries(object):
         self.timer = timer
         self.formattedEntries = None
 
-        project_name += PROJECT_EXTENSION
-        self.timer_pickle_file = os.path.join(os.path.expanduser(PYTOMATO_PROJECTS_DIR), project_name)
+        self.project_name = project_name + PROJECT_EXTENSION
+        self.project_directory = os.path.expanduser(PYTOMATO_PROJECTS_DIR)
+
+        self.timer_pickle_file = os.path.join(self.project_directory, self.project_name)
+        # this is used to save first and then overwrite the original to not corrupt the file on save
         self.backup_timer_pickle_file = self.timer_pickle_file + ".bak"
 
     def initialise(self):
@@ -35,7 +38,6 @@ class Entries(object):
                                        entry["entry"]["entryEnd"].strftime("%Y%m%d") == today,
                                        self.past_entries)
 
-        # pretty format
         self.formattedEntries = map(lambda entry: self.prettyFormat(entry), self.formattedEntries)
 
         if self.formattedEntries:
@@ -80,6 +82,9 @@ class Entries(object):
         )
 
     def save(self):
+        if not os.path.isdir(self.project_directory):
+            os.mkdir(self.project_directory)
+
         # don't save in original file, save in a backup copy
         pickle.dump(self.past_entries, open(self.backup_timer_pickle_file, 'wb'))
         # then overwrite the original
