@@ -4,6 +4,7 @@ import time
 import entries
 from defaults import BREAK_TYPE, SHORT_TOMATO_DURATION, TOMATO_TYPE
 from run_parameters import RunParameters
+from soundboard import SoundBoard
 from utility import formatToHHMM
 
 
@@ -15,6 +16,7 @@ class Timer(object):
         self.entries = entries.Entries(self, self.project_name)
 
         self.notifyString = None
+        self.soundboard = SoundBoard(parameters.mute)
 
     def run(self, parameters: RunParameters):
         if parameters.clean:
@@ -60,10 +62,12 @@ class Timer(object):
                     userNotified = True
 
         # if anything happens try to end and save out the file
+        # note: the strings below are intended to have empty spaces, to make sure they overwrite the whole line
+        # because the print in the while loop uses \r to rewrite the line
         except KeyboardInterrupt:
-            print("Interripting timer and saving entry.")
+            print("Interripting timer and saving entry.                  ")
         except SystemExit:
-            print("System exiting, saving entry.")
+            print("System exiting, saving entry.                         ")
 
         endDateTime = datetime.datetime.now()
         self.entries.add(startDateTime, endDateTime, elapsedTime, targetTime)
@@ -79,15 +83,18 @@ class Timer(object):
         self.notifyUser()
 
     def createMessagesForRun(self, runType, targetTime):
+        # note: the strings below are intended to have empty spaces, to make sure they overwrite the whole line
+        # because the print in the while loop uses \r to rewrite the line
         if runType == BREAK_TYPE:
-            self.notifyString = "Your break was {0} minutes long and is now over!".format(targetTime // 60)
+            self.notifyString = "Your break was {0} minutes long and is now over!         ".format(targetTime // 60)
 
         elif runType == TOMATO_TYPE:
-            self.notifyString = "Going Overtime! You should take a {0} break.".format(
+            self.notifyString = "Going Overtime! You should take a {0} break.             ".format(
                 "5 minute" if targetTime <= SHORT_TOMATO_DURATION else "15 minute")
 
     def notifyUser(self):
         print(self.notifyString)
+        self.soundboard.play_notification_sound()
 
     def updateVisuals(self, elapsedTime, targetTime, targetTimeString):
         output = "Elapsed time: {0}/{1} - Tomato is {2:.3f}% eaten.".format(formatToHHMM(

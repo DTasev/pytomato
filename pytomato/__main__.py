@@ -35,7 +35,7 @@ def _set_up_break_or_tomato(parameters: RunParameters, args: ArgumentParser,
     return parameters
 
 
-def setUpRunParameters(parameters: RunParameters, args: ArgumentParser) -> RunParameters:
+def set_up_run_parameters(parameters: RunParameters, args: ArgumentParser) -> RunParameters:
     # can't do both at the same time, we prefer long
     if args.short and args.long:  # type: ignore
         args.short = False  # type: ignore
@@ -59,6 +59,7 @@ def setUpRunParameters(parameters: RunParameters, args: ArgumentParser) -> RunPa
     parameters.clean = args.clean  # type: ignore
     parameters.listAndExit = args.list  # type: ignore
     parameters.delete = args.delete  # type: ignore
+    parameters.mute = args.mute  # type: ignore
 
     return parameters
 
@@ -84,6 +85,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     parameters = RunParameters()
-    parameters = setUpRunParameters(parameters, args)
+    parameters = set_up_run_parameters(parameters, args)
 
     main(parameters, args)

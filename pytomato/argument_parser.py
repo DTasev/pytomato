@@ -38,7 +38,7 @@ def setupParser():
     )
 
     parser.add_argument(
-        "-t",
+        "-d",
         "--duration",
         required=False,
         type=int,
@@ -79,10 +79,16 @@ def setupParser():
     )
 
     parser.add_argument(
-        "-d",
         "--delete",
         type=int,
         help="Delete the entry and exit."
+    )
+
+    parser.add_argument(
+        "-m",
+        "--mute",
+        action='store_true',
+        help="Mute the sound that is played when the tomato timer is finished."
     )
 
     return parser

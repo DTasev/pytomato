@@ -9,3 +9,4 @@ class RunParameters:
     listAndExit = False
     delete = None
     project_name = DEFAULT_PROJECT_NAME
+    mute = False
