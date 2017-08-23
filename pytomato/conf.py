@@ -16,7 +16,7 @@ BREAK_NAME = "Tomato Break"
 TOMATO_TYPE = "Tomato"
 BREAK_TYPE = "Break"
 
-PYTOMATO_PROJECTS_DIR = "~/.pytomato"
+PYTOMATO_PROJECTS_DIR = "~/pytomato"
 DEFAULT_PROJECT_NAME = "default"
 PROJECT_EXTENSION = ".tomato"
 
