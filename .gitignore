@@ -4,3 +4,6 @@ __pycache__/
 
 # nose files ignore
 .noseids
+
+# ignore conf.py to protect private information from being added accidentally
+conf.py
