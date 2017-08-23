@@ -1,10 +1,11 @@
+import datetime
 import os
 import pickle
-import datetime
 
+from pytomato.git_handler import GitHandler
+from pytomato.conf import (GIT_EXECUTABLE_PATH, GIT_REMOTE_REPOSITORY_URI,
+                           PROJECT_EXTENSION, PYTOMATO_PROJECTS_DIR)
 from pytomato.utility import formatToHHMM
-
-from pytomato.conf import PYTOMATO_PROJECTS_DIR, PROJECT_EXTENSION
 
 
 class Entries(object):
@@ -79,7 +80,7 @@ class Entries(object):
             }
         )
 
-    def save(self):
+    def save(self, name):
         if not os.path.isdir(self.project_directory):
             os.mkdir(self.project_directory)
 
@@ -88,6 +89,8 @@ class Entries(object):
         # then overwrite the original
         os.replace(self.backup_timer_pickle_file, self.timer_pickle_file)
 
+        self.backup_entries(name)
+
     def deleteEntry(self, id):
         try:
             print("Removing entry", id, ":", self.prettyFormat(self.past_entries[id]))
@@ -95,3 +98,7 @@ class Entries(object):
 
         except IndexError:
             print("Could not find entry. Nothing is changed")
+
+    def backup_entries(self, name):
+        gh = GitHandler(GIT_EXECUTABLE_PATH, PYTOMATO_PROJECTS_DIR, GIT_REMOTE_REPOSITORY_URI)
+        gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))

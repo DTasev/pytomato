@@ -4,6 +4,9 @@ from pytomato.run_parameters import RunParameters
 from pytomato.timer import Timer
 from pytomato.entries import Entries
 
+import sys
+print(sys.path)
+
 
 class TimerTest(unittest.TestCase):
 

@@ -1,8 +1,8 @@
-from conf import (BREAK_NAME, BREAK_TYPE, LONG_BREAK_DURATION,
-                  LONG_TOMATO_DURATION, SHORT_BREAK_DURATION,
-                  SHORT_TOMATO_DURATION, TOMATO_NAME, TOMATO_TYPE)
-from run_parameters import RunParameters
-from argument_parser import setupParser
+from pytomato.conf import (BREAK_NAME, BREAK_TYPE, LONG_BREAK_DURATION,
+                           LONG_TOMATO_DURATION, SHORT_BREAK_DURATION,
+                           SHORT_TOMATO_DURATION, TOMATO_NAME, TOMATO_TYPE)
+from pytomato.run_parameters import RunParameters
+from pytomato.argument_parser import setupParser
 from argparse import ArgumentParser
 
 
@@ -71,14 +71,12 @@ def main():
     parameters = RunParameters()
     parameters = set_up_run_parameters(parameters, args)
 
-    main(parameters, args)
-
     if args.cli:  # type: ignore
-        from timer import Timer
+        from pytomato.timer import Timer
         timer = Timer(parameters)
     else:
         try:
-            from guitimer import GUITimer
+            from pytomato.guitimer import GUITimer
             timer = GUITimer(parameters)
         except ImportError as exc:
             print("Could not create GUI timer, you need PyQt5 installed! Or run with --cli for console mode.")
