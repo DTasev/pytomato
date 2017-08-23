@@ -6,8 +6,8 @@ import timer
 
 
 class GUITimer(timer.Timer):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parameters):
+        super().__init__(parameters)
         self.app = Qt.QApplication(sys.argv)
 
     def notifyUser(self):

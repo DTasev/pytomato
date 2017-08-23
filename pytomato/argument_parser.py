@@ -3,6 +3,7 @@ import argparse
 
 def setupParser():
     parser = argparse.ArgumentParser()
+
     parser.add_argument(
         "-n",
         "--name",
