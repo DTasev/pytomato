@@ -98,7 +98,7 @@ class Git(object):
         return self._handle_error(res)
 
     def push(self):
-        print("Uploading files to remote repository")
+        print("Uploading files to remote repository.")
         _run_detached(self.git + " push --set-upstream origin master")
 
     def status(self):

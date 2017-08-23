@@ -57,7 +57,6 @@ class Timer(object):
                 self.updateVisuals(elapsedTime, targetTime, targetTimeString)
                 time.sleep(0.95)
                 elapsedTime += 1
-                raise KeyboardInterrupt()
 
                 # warn the user only when we're over the target time and we haven't previously notified them
                 if not userNotified and elapsedTime >= targetTime:
