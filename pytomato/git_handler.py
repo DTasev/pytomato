@@ -3,6 +3,9 @@ import subprocess
 
 from typing import List, Union
 
+DETACHED_PROCESS = 0x00000008
+CREATE_NEW_PROCESS_GROUP = 0x00000200
+
 
 def is_git_repository(directory):
     return os.path.isdir(os.path.join(directory, ".git"))
@@ -20,6 +23,17 @@ def _run(args: Union[List[str], str], not_split_args=None) -> subprocess.Complet
     return subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
 
+def _run_detached(args: Union[List[str], str], not_split_args=None) -> subprocess.CompletedProcess:
+    if isinstance(args, str):
+        args = args.split(" ")
+
+    if not_split_args:
+        args.append(not_split_args)
+
+    output_file = open('last_output.out', 'wb')
+    return subprocess.run(args, stdout=output_file, stderr=output_file, shell=True)
+
+
 class GitHandler(object):
     def __init__(self, git, repo_location, repo_remote_uri):
         self.git = Git(git)
@@ -32,16 +46,14 @@ class GitHandler(object):
         :returns: On success 0, on failure 1
         """
         os.chdir(self.repo_location)
-        if not is_git_repository(self.repo_location):
-            self.git.init()
+
+        self.git.init()
 
         self.git.add()
         self.git.commit(message)
 
-        if self.git.push() != 0:
-            self.git.set_remote(self.repo_remote_uri)
-            return self.git.push()
-
+        self.git.set_remote(self.repo_remote_uri)
+        self.git.push()
         return 0
 
 
@@ -81,9 +93,13 @@ class Git(object):
         res = _run(self.git + " remote add origin", remote_uri)
         return self._handle_error(res)
 
-    def push(self):
-        res = _run(self.git + " push --set-upstream origin master")
+    def clone(self, remote_uri):
+        res = _run(self.git + " clone", remote_uri)
         return self._handle_error(res)
+
+    def push(self):
+        print("Uploading files to remote repository")
+        _run_detached(self.git + " push --set-upstream origin master")
 
     def status(self):
         res = _run(self.git + " status")
