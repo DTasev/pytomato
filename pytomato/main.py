@@ -1,6 +1,6 @@
-from pytomato.conf import (BREAK_NAME, BREAK_TYPE, LONG_BREAK_DURATION,
+from pytomato.conf import (DEFAULT_BREAK_NAME, BREAK_TYPE, LONG_BREAK_DURATION,
                            LONG_TOMATO_DURATION, SHORT_BREAK_DURATION,
-                           SHORT_TOMATO_DURATION, TOMATO_NAME, TOMATO_TYPE)
+                           SHORT_TOMATO_DURATION, DEFAULT_TOMATO_NAME, TOMATO_TYPE)
 from pytomato.run_parameters import RunParameters
 from pytomato.argument_parser import setupParser
 from argparse import ArgumentParser
@@ -46,11 +46,11 @@ def set_up_run_parameters(parameters: RunParameters, args: ArgumentParser) -> Ru
 
     if args.short_break or args.long_break:  # type: ignore
         parameters = _set_up_break_or_tomato(parameters, args, SHORT_BREAK_DURATION,
-                                             LONG_BREAK_DURATION, BREAK_NAME, BREAK_TYPE)
+                                             LONG_BREAK_DURATION, DEFAULT_BREAK_NAME, BREAK_TYPE)
 
     else:
         parameters = _set_up_break_or_tomato(parameters, args, SHORT_TOMATO_DURATION,
-                                             LONG_TOMATO_DURATION, TOMATO_NAME, TOMATO_TYPE)
+                                             LONG_TOMATO_DURATION, DEFAULT_TOMATO_NAME, TOMATO_TYPE)
 
     if args.project:  # type: ignore
         # this will have the default value from conf.py if not changed here

@@ -12,8 +12,8 @@ SHORT_BREAK_DURATION = 300
 # 10 minutes
 LONG_BREAK_DURATION = 600
 
-TOMATO_NAME = "Tomato"
-BREAK_NAME = "Tomato Break"
+DEFAULT_TOMATO_NAME = "Tomato"
+DEFAULT_BREAK_NAME = "Tomato Break"
 
 TOMATO_TYPE = "Tomato"
 BREAK_TYPE = "Break"
