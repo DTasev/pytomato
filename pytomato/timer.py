@@ -35,7 +35,7 @@ class Timer(object):
             self.entries.deleteEntry(self.parameters.delete)
             print("List state after deletion")
             self.entries.listEntries()
-            self.entries.save()
+            self.entries.save(self.name)
             return
 
         # convert to minutes
