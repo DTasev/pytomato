@@ -27,6 +27,7 @@ class Entries(object):
         self.backup_timer_pickle_file = self.timer_pickle_file + ".bak"
 
     def initialise(self):
+        self.ensure_directory_exists()
         self.gh = GitHandler(git=GIT_EXECUTABLE_PATH, repo_location=PYTOMATO_PROJECTS_DIR,
                              repo_remote_uri=GIT_REMOTE_REPOSITORY_URI, force_upload=self.force_upload)
         self.gh.init()
@@ -87,9 +88,12 @@ class Entries(object):
             }
         )
 
-    def save(self, name):
+    def ensure_directory_exists(self):
         if not os.path.isdir(self.project_directory):
             os.mkdir(self.project_directory)
+
+    def save(self, name):
+        self.ensure_directory_exists()
 
         # don't save in original file, save in a backup copy
         pickle.dump(self.past_entries, open(self.backup_timer_pickle_file, 'wb'))

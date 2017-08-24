@@ -22,7 +22,7 @@ PYTOMATO_PROJECTS_DIR = os.path.expanduser("~/pytomato")
 DEFAULT_PROJECT_NAME = "default"
 PROJECT_EXTENSION = ".tomato"
 
-GIT_EXECUTABLE_PATH = R"git.exe"
+GIT_EXECUTABLE_PATH = R"git"
 GIT_REMOTE_REPOSITORY_URI = "https://github.com/dtasev/pytomato_entries"
 GIT_PUSH_OUTPUT_FILE = "git_push.out"
 

@@ -53,7 +53,6 @@ class GitHandler(object):
             self.git.init()
 
         if self.repo_remote_uri:
-            print("Pulling remote entries")
             self.git.set_remote(self.repo_remote_uri)
             self.git.pull()
 
@@ -172,5 +171,7 @@ class Git(object):
     def pull(self):
         if self.git == "":
             return 1
+
+        print("Pulling remote entries")
         res = _run(self.git, "pull origin master")
         return self._handle_error(res)
