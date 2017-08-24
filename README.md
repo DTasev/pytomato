@@ -4,8 +4,6 @@ The entires are stored in a configured `git` repository, which has to be changed
 
 This has been mostly tested with having `git credentials` set up, i.e. you do not need to re-enter your username and password on every push. It needs further testing to properly work with entering credentials and it will probably be fixed the next time I work on a Linux-based workstation.
 
-
-
 ---
 
 [What is Pomodoro?](https://en.wikipedia.org/wiki/Pomodoro_Technique)
