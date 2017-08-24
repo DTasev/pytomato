@@ -12,5 +12,14 @@
     "python.unitTest.nosetestArgs": [
         "pytomato"
     ],
-    "python.unitTest.nosetestsEnabled": true
+    "python.unitTest.nosetestsEnabled": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/.mypy_cache": true,
+        "**/__pycache__": true
+    }
 }
