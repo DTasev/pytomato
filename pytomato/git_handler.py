@@ -10,23 +10,24 @@ def is_git_repository(directory):
     return os.path.isdir(os.path.join(directory, ".git"))
 
 
-def _run(args: Union[List[str], str], not_split_args=None) -> subprocess.CompletedProcess:
+def _prep_args(git_exec, args, not_split_args):
     if isinstance(args, str):
         args = args.split(" ")
 
+    args = [git_exec] + args
     if not_split_args:
         args.append(not_split_args)
 
+    return args
+
+
+def _run(git_exec, args: Union[List[str], str], not_split_args=None) -> subprocess.CompletedProcess:
+    args = _prep_args(git_exec, args, not_split_args)
     return subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
 
-def _run_detached(args: Union[List[str], str], not_split_args=None) -> subprocess.CompletedProcess:
-    if isinstance(args, str):
-        args = args.split(" ")
-
-    if not_split_args:
-        args.append(not_split_args)
-
+def _run_detached(git_exec, args: Union[List[str], str], not_split_args=None) -> subprocess.CompletedProcess:
+    args = _prep_args(git_exec, args, not_split_args)
     output_file = open(GIT_PUSH_OUTPUT_FILE, 'wb')
     return subprocess.run(args, stdout=output_file, stderr=output_file, shell=True)
 
@@ -45,13 +46,18 @@ class GitHandler(object):
         self.force_upload = force_upload
 
     def init(self):
+        cwd = os.getcwd()
+        os.chdir(self.repo_location)
         if not is_git_repository(self.repo_location):
-            # TODO try git cloning the remote URI if uri specified and exists
-            cwd = os.getcwd()
-            os.chdir(self.repo_location)
+            # try git cloning the remote URI if uri specified and exists
             self.git.init()
+
+        if self.repo_remote_uri:
+            print("Pulling remote entries")
             self.git.set_remote(self.repo_remote_uri)
-            os.chdir(cwd)
+            self.git.pull()
+
+        os.chdir(cwd)
 
     def upload(self, message) -> int:
         """
@@ -109,40 +115,62 @@ class Git(object):
 
     def _handle_error(self, res):
         if res.stdout:
-            print(res.stdout.decode())
+            print("stdout:", res.stdout.decode())
         if res.returncode != 0:
             if res.stderr:
-                print(res.stderr.decode())
+                print("stderr:", res.stderr.decode())
         return res.returncode
 
     def init(self):
-        res = _run(self.git + " init")
+        if self.git == "":
+            return 1
+        res = _run(self.git, "init")
         return self._handle_error(res)
 
     def add(self):
-        res = _run(self.git + " add .")
+        if self.git == "":
+            return 1
+        res = _run(self.git, "add .")
         return self._handle_error(res)
 
     def commit(self, message):
-        res = _run(self.git + " commit -m", message)
+        if self.git == "":
+            return 1
+        res = _run(self.git, "commit -m", message)
         return self._handle_error(res)
 
     def set_remote(self, remote_uri):
-        res = _run(self.git + " remote add origin", remote_uri)
+        if self.git == "":
+            return 1
+        res = _run(self.git, "remote add origin", remote_uri)
         return self._handle_error(res)
 
     def clone(self, remote_uri):
-        res = _run(self.git + " clone", remote_uri)
+        if self.git == "":
+            return 1
+        res = _run(self.git, ["clone", remote_uri], " . ")
         return self._handle_error(res)
 
     def push(self):
+        if self.git == "":
+            return 1
         print("Uploading files to remote repository.")
-        _run_detached(self.git + " push --set-upstream origin master")
+        _run_detached(self.git, "push --set-upstream origin master")
 
     def status(self):
-        res = _run(self.git + " status")
+        if self.git == "":
+            return 1
+        res = _run(self.git, "status")
+        return self._handle_error(res)
+
+    def branch_track_master(self):
+        if self.git == "":
+            return 1
+        res = _run(self.git, R"branch --set-upstream-to=origin/master master")
         return self._handle_error(res)
 
     def pull(self):
-        res = _run(self.git + " pull origin master")
+        if self.git == "":
+            return 1
+        res = _run(self.git, "pull origin master")
         return self._handle_error(res)
