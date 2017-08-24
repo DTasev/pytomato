@@ -10,3 +10,4 @@ class RunParameters:
     delete = None
     project_name = DEFAULT_PROJECT_NAME
     mute = False
+    force_upload = False

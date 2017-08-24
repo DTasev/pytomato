@@ -2,28 +2,35 @@ import datetime
 import os
 import pickle
 
-from pytomato.git_handler import GitHandler
 from pytomato.conf import (GIT_EXECUTABLE_PATH, GIT_REMOTE_REPOSITORY_URI,
                            PROJECT_EXTENSION, PYTOMATO_PROJECTS_DIR)
+from pytomato.git_handler import GitHandler
 from pytomato.utility import formatToHHMM
 
 
 class Entries(object):
-    def __init__(self, timer, project_name):
+    def __init__(self, timer, project_name, force_upload):
         """
+        :param timer: The timer object
         :param project_name: This will be used as the file name inside the projects directory.
+        :param force_upload: Force an upload to the remote storage at the end of the run
         """
         self.timer = timer
         self.formattedEntries = None
 
         self.project_name = project_name + PROJECT_EXTENSION
         self.project_directory = os.path.expanduser(PYTOMATO_PROJECTS_DIR)
+        self.force_upload = force_upload
 
         self.timer_pickle_file = os.path.join(self.project_directory, self.project_name)
         # this is used to save first and then overwrite the original to not corrupt the file on save
         self.backup_timer_pickle_file = self.timer_pickle_file + ".bak"
 
     def initialise(self):
+        self.gh = GitHandler(git=GIT_EXECUTABLE_PATH, repo_location=PYTOMATO_PROJECTS_DIR,
+                             repo_remote_uri=GIT_REMOTE_REPOSITORY_URI, force_upload=self.force_upload)
+        self.gh.init()
+
         if os.path.isfile(self.timer_pickle_file):
             self.past_entries = pickle.load(open(self.timer_pickle_file, 'rb'))
         else:
@@ -100,5 +107,4 @@ class Entries(object):
             print("Could not find entry. Nothing is changed")
 
     def backup_entries(self, name):
-        gh = GitHandler(GIT_EXECUTABLE_PATH, PYTOMATO_PROJECTS_DIR, GIT_REMOTE_REPOSITORY_URI)
-        gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))
+        self.gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))

@@ -24,3 +24,7 @@ PROJECT_EXTENSION = ".tomato"
 
 GIT_EXECUTABLE_PATH = "git"
 GIT_REMOTE_REPOSITORY_URI = "https://github.com/dtasev/pytomato_entries"
+GIT_PUSH_OUTPUT_FILE = "git_push.out"
+
+# 30 minutes
+REMOTE_UPDATE_TIMEOUT = 1800

@@ -91,4 +91,10 @@ def setupParser():
         help="Mute the sound that is played when the tomato timer is finished."
     )
 
+    parser.add_argument(
+        "--upload",
+        action='store_true',
+        help="Force upload to remote."
+    )
+
     return parser

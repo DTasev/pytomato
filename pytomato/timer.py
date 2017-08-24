@@ -15,7 +15,7 @@ class Timer(object):
         self.project_name = parameters.project_name
         self.parameters = parameters
 
-        self.entries = entries.Entries(self, self.project_name)
+        self.entries = entries.Entries(self, self.project_name, parameters.force_upload)
         self.notifyString = None
         self.soundboard = SoundBoard(parameters.mute)
 
