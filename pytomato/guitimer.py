@@ -15,5 +15,15 @@ class GUITimer(timer.Timer):
         self.systemtray_icon = Qt.QSystemTrayIcon(self.icon, self.app)
         self.systemtray_icon.show()
 
+    def closeEvent(self):
+        # hide the tray icon
+        self.systemtray_icon.hide()
+
     def notifyUser(self):
         self.systemtray_icon.showMessage('Going Overtime!', self.notifyString, self.icon)
+
+    def updateVisuals(self, elapsedTime, targetTime, targteTimeString):
+        # update the CLI 
+        cli_string = super().updateVisuals(elapsedTime, targetTime, targteTimeString)
+        # update the GUI
+        self.systemtray_icon.setToolTip(cli_string)

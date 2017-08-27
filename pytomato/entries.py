@@ -103,12 +103,15 @@ class Entries(object):
         self.backup_entries(name)
 
     def deleteEntry(self, id):
+        print("List length before removal:", len(self.past_entries))
         try:
             print("Removing entry", id, ":", self.prettyFormat(self.past_entries[id]))
             del self.past_entries[id]
 
         except IndexError:
             print("Could not find entry. Nothing is changed")
+        
+        print("List length after removal:", len(self.past_entries))
 
     def backup_entries(self, name):
         self.gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))

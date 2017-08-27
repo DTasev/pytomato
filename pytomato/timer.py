@@ -72,8 +72,13 @@ class Timer(object):
             print("System exiting, saving entry.                         ")
 
         endDateTime = datetime.datetime.now()
+        self.closeEvent()
         self.entries.add(startDateTime, endDateTime, elapsedTime, targetTime)
         self.entries.save(self.name)
+
+    def closeEvent(self):
+        # nothing to do for the CLI timer
+        pass
 
     def notify(self):
         """
@@ -97,8 +102,16 @@ class Timer(object):
     def notifyUser(self):
         print(self.notifyString)
         self.soundboard.play_notification_sound()
+    
+    def updateVisuals(self, elapsedTime, targetTime, targetTimeString) -> str:
+        """
+        Create the CLI string, print to the command line window and return it
 
-    def updateVisuals(self, elapsedTime, targetTime, targetTimeString):
+        :param elapsedTime: The elapsed time in seconds
+        :param targetTime: The target time in seconds
+        :param targetTimeString: The pretty-formatted target time toe HH:MM
+        """
         output = "Elapsed time: {0}/{1} - Tomato is {2:.3f}% eaten.".format(formatToHHMM(
             elapsedTime), targetTimeString, (elapsedTime / targetTime) * 100)
         print(output, end="\r")
+        return output
