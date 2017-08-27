@@ -6,14 +6,8 @@ This has been mostly tested with having `git credentials` set up, i.e. you do no
 
 ---
 
-[What is Pomodoro?](https://en.wikipedia.org/wiki/Pomodoro_Technique)
----------------------------------------------------------------------
-Briefly (from Wikipedia): The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks. These intervals are named pomodoros, the plural in English of the Italian word pomodoro (tomato), after the tomato-shaped kitchen timer that Cirillo used as a university student.
-
----
-
 How to install `pytomato`?
-------------------------
+--------------------------
 
 1. You need to have Python 3.6 installed. 
     - To use the GUI notification you also need PyQt5 installed. This can be done by `pip install -r install-requirements.txt`
@@ -35,3 +29,10 @@ How to install `pytomato`?
     - For the full list of parameters pass the `-h` or `--help` flag.
 
 1. The default durations for short and long runs can be adjusted from the `conf.py` file, along with other settings available, please refer to the file.
+
+---
+
+[What is Pomodoro?](https://en.wikipedia.org/wiki/Pomodoro_Technique)
+---------------------------------------------------------------------
+Briefly (from Wikipedia): The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks. These intervals are named pomodoros, the plural in English of the Italian word pomodoro (tomato), after the tomato-shaped kitchen timer that Cirillo used as a university student.
+
