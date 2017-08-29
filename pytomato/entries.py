@@ -33,17 +33,25 @@ class Entries(object):
         self.gh.init()
 
         if os.path.isfile(self.timer_pickle_file):
+            print("Found existing file, loading entries")
             self.past_entries = pickle.load(open(self.timer_pickle_file, 'rb'))
         else:
             self.past_entries = []
 
-    def listEntries(self):
+    def listEntries(self, list_all_entires=False):
+        """
+        :param list_all_entires: List all of the entries regardless of when they were added.
+        """
         today = datetime.datetime.now().strftime("%Y%m%d")
 
-        # filter out all of the entries that are not today
-        self.formattedEntries = filter(lambda entry:
-                                       entry["entry"]["entryEnd"].strftime("%Y%m%d") == today,
-                                       self.past_entries)
+        if not list_all_entires:
+            # filter out all of the entries that are not today
+            self.formattedEntries = filter(lambda entry:
+                                           entry["entry"]["entryEnd"].strftime("%Y%m%d") == today,
+                                           self.past_entries)
+        else:
+            # don't do anything
+            self.formattedEntries = self.past_entries
 
         self.formattedEntries = map(lambda entry: self.prettyFormat(entry), self.formattedEntries)
 

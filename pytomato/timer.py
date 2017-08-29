@@ -25,10 +25,13 @@ class Timer(object):
             return
 
         self.entries.initialise()
-        self.entries.listEntries()
-
         if self.parameters.listAndExit:
+            # List all entries if list is specified
+            self.entries.listEntries(list_all_entires=True)
             return
+        else:
+            # otherwise list just today
+            self.entries.listEntries()
 
         # check if not none, because single integers get cast to booleans..
         if self.parameters.delete is not None:
