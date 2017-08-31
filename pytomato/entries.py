@@ -35,7 +35,7 @@ class Entries(object):
         if os.path.isfile(self.timer_pickle_file):
             print("Found existing file, loading entries")
             self.past_entries = pickle.load(open(self.timer_pickle_file, 'rb'))
-            print(len(self.past_entries), "entries loaded.")
+            print(len(self.past_entries), "entries loaded in total.")
         else:
             self.past_entries = []
 
