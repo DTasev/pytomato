@@ -55,16 +55,21 @@ class Timer(object):
         userNotified = False
 
         targetTimeString = formatToHHMM(targetTime)
+        # start the initial update timer
+        update_compensation_timer = time.time()
         try:
             while True:
                 self.updateVisuals(elapsedTime, targetTime, targetTimeString)
-                time.sleep(0.95)
+                # sleep for the rest of the 1 second, by subtracting the time spent processing
+                time.sleep(1 - (time.time()-update_compensation_timer))
                 elapsedTime += 1
 
                 # warn the user only when we're over the target time and we haven't previously notified them
                 if not userNotified and elapsedTime >= targetTime:
                     self.notify()
                     userNotified = True
+                # update the update timer after everything has been completed timer
+                update_compensation_timer = time.time()
 
         # if anything happens try to end and save out the file
         # note: the strings below are intended to have empty spaces, to make sure they overwrite the whole line
