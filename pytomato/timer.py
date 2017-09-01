@@ -10,12 +10,12 @@ from pytomato.utility import formatToHHMM
 
 class Timer(object):
     def __init__(self, parameters: RunParameters) -> None:
-        self.name = parameters.name
+        self.run_name = parameters.name
         self.runType = parameters.runType
         self.project_name = parameters.project_name
         self.parameters = parameters
 
-        self.entries = entries.Entries(self, self.project_name, parameters.force_upload)
+        self.entries = entries.Entries(self, self.run_name, self.project_name, parameters.force_upload)
         self.notifyString = None
         self.soundboard = SoundBoard(parameters.mute)
 
@@ -38,7 +38,12 @@ class Timer(object):
             self.entries.deleteEntry(self.parameters.delete)
             print("List state after deletion")
             self.entries.listEntries()
-            self.entries.save(self.name)
+            self.entries.save()
+            return
+
+        if self.parameters.force_upload:
+            # The parameter is set on initialisation, we only need to call save and it will be upload
+            self.entries.save()
             return
 
         # convert to minutes
@@ -47,7 +52,7 @@ class Timer(object):
         self.createMessagesForRun(self.runType, targetTime)
 
         print("Project:", self.project_name)
-        print("Entry name:", self.name)
+        print("Entry name:", self.run_name)
         print("Target time", targetTime // 60, "minutes")
 
         startDateTime = datetime.datetime.now()
@@ -82,7 +87,7 @@ class Timer(object):
         endDateTime = datetime.datetime.now()
         self.closeEvent()
         self.entries.add(startDateTime, endDateTime, elapsedTime, targetTime)
-        self.entries.save(self.name)
+        self.entries.save()
 
     def closeEvent(self):
         # nothing to do for the CLI timer

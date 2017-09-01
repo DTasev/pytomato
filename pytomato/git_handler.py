@@ -33,17 +33,15 @@ def _run_detached(git_exec, args: Union[List[str], str], not_split_args=None) ->
 
 
 class GitHandler(object):
-    def __init__(self, git, repo_location, repo_remote_uri, force_upload):
+    def __init__(self, git, repo_location, repo_remote_uri):
         """
         :parma git: The git executable command or path
         :param repo_location: Path to the local repository
         :param repo_remote_uri: The URI of the remote repository
-        :param force_upload: Force an upload to the remote storage at the end of the run
         """
         self.git = Git(git)
         self.repo_location = repo_location
         self.repo_remote_uri = repo_remote_uri
-        self.force_upload = force_upload
 
     def init(self):
         cwd = os.getcwd()
@@ -58,7 +56,7 @@ class GitHandler(object):
 
         os.chdir(cwd)
 
-    def upload(self, message) -> int:
+    def upload(self, message, force_upload) -> int:
         """
         TODO: This needs to be done async, result should be saved in the 
         repo_location and shown to the user on next startup?
@@ -72,19 +70,19 @@ class GitHandler(object):
         self.git.add()
         self.git.commit(message)
 
-        if self.is_it_time_to_push():
+        if self.is_it_time_to_push(force_upload):
             self.git.push()
         return 0
 
-    def is_it_time_to_push(self):
+    def is_it_time_to_push(self, force_upload=False):
         # if remote repository is not set dont push, even if upload is specified
         if self.repo_remote_uri == "":
             return False
 
         output_file = os.path.join(self.repo_location, GIT_PUSH_OUTPUT_FILE)
 
-        # if forcing upload or no previous output push to remote
-        if self.force_upload or not os.path.isfile(output_file):
+        # if force upload or no previous output push to remote
+        if force_upload or not os.path.isfile(output_file):
             return True
 
         last_mod = datetime.datetime.fromtimestamp(os.path.getmtime(output_file))

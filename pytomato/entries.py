@@ -9,17 +9,18 @@ from pytomato.utility import formatToHHMM
 
 
 class Entries(object):
-    def __init__(self, timer, project_name, force_upload):
+    def __init__(self, timer, run_name, project_name, force_upload):
         """
         :param timer: The timer object
         :param project_name: This will be used as the file name inside the projects directory.
-        :param force_upload: Force an upload to the remote storage at the end of the run
         """
         self.timer = timer
+        self.run_name = run_name
         self.formattedEntries = None
 
         self.project_name = project_name + PROJECT_EXTENSION
         self.project_directory = os.path.expanduser(PYTOMATO_PROJECTS_DIR)
+
         self.force_upload = force_upload
 
         self.timer_pickle_file = os.path.join(self.project_directory, self.project_name)
@@ -29,7 +30,7 @@ class Entries(object):
     def initialise(self):
         self.ensure_directory_exists()
         self.gh = GitHandler(git=GIT_EXECUTABLE_PATH, repo_location=PYTOMATO_PROJECTS_DIR,
-                             repo_remote_uri=GIT_REMOTE_REPOSITORY_URI, force_upload=self.force_upload)
+                             repo_remote_uri=GIT_REMOTE_REPOSITORY_URI)
         self.gh.init()
 
         if os.path.isfile(self.timer_pickle_file):
@@ -85,7 +86,7 @@ class Entries(object):
     def add(self, startDateTime, endDateTime, elapsedTime, targetTime):
         self.past_entries.append(
             {
-                "name": self.timer.name,
+                "name": self.run_name,
                 "type": self.timer.runType,
                 "entry":
                 {
@@ -101,7 +102,7 @@ class Entries(object):
         if not os.path.isdir(self.project_directory):
             os.mkdir(self.project_directory)
 
-    def save(self, name):
+    def save(self):
         self.ensure_directory_exists()
 
         # don't save in original file, save in a backup copy
@@ -109,7 +110,7 @@ class Entries(object):
         # then overwrite the original
         os.replace(self.backup_timer_pickle_file, self.timer_pickle_file)
 
-        self.backup_entries(name)
+        self.backup_entries(self.run_name)
 
     def deleteEntry(self, id):
         print("List length before removal:", len(self.past_entries))
@@ -123,4 +124,4 @@ class Entries(object):
         print("List length after removal:", len(self.past_entries))
 
     def backup_entries(self, name):
-        self.gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))
+        self.gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")), self.force_upload)
