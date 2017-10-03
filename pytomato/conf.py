@@ -24,7 +24,7 @@ TOMATO_TYPE = "Tomato"
 BREAK_TYPE = "Break"
 
 # Directory where the tomato proejct files will be stored.
-PYTOMATO_PROJECTS_DIR = os.path.expanduser("~/pytomato")
+PYTOMATO_PROJECTS_DIR = os.path.expanduser("~/pytomato_entries")
 
 # Default name of the project used for entries without a custom project specified
 DEFAULT_PROJECT_NAME = "default"
