@@ -32,7 +32,7 @@ DEFAULT_PROJECT_NAME = "default"
 # The extension of the file.
 PROJECT_EXTENSION = ".tomato"
 
-# Git executable that will be used to run the git commands. 
+# Git executable that will be used to run the git commands
 # This can be a full path to the git executable such as C:\Program Files\Git\git.exe
 # Just keep the R in front so that python reads it as a literal string
 GIT_EXECUTABLE_PATH = R"git"
@@ -42,6 +42,10 @@ GIT_EXECUTABLE_PATH = R"git"
 GIT_REMOTE_REPOSITORY_URI = "https://github.com/dtasev/pytomato_entries"
 GIT_PUSH_OUTPUT_FILE = "git_push.out"
 
-# Minimum duration before pushing any changes to the remote. 
+# Minimum duration before pushing any changes to the remote
 # Default is 1800 seconds (30 minutes)
 REMOTE_UPDATE_TIMEOUT = 1800
+
+# Minumum duration for a valid entry, anything before that will NOT be saved
+# Default is 60 seconds (1 minute)
+MINIMUM_DURATION_FOR_VALID_ENTRY = 60

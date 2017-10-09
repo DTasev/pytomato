@@ -2,7 +2,7 @@ import datetime
 import time
 
 from pytomato import entries
-from pytomato.conf import BREAK_TYPE, SHORT_TOMATO_DURATION, TOMATO_TYPE
+from pytomato.conf import BREAK_TYPE, SHORT_TOMATO_DURATION, TOMATO_TYPE, MINIMUM_DURATION_FOR_VALID_ENTRY
 from pytomato.run_parameters import RunParameters
 from pytomato.soundboard import SoundBoard
 from pytomato.utility import formatToHHMM
@@ -86,8 +86,15 @@ class Timer(object):
 
         endDateTime = datetime.datetime.now()
         self.closeEvent()
-        self.entries.add(startDateTime, endDateTime, elapsedTime, targetTime)
-        self.entries.save()
+
+        # only save if the run is long enough
+        if elapsedTime > MINIMUM_DURATION_FOR_VALID_ENTRY:
+            self.entries.add(startDateTime, endDateTime, elapsedTime, targetTime)
+            self.entries.save()
+        else:
+            print("Run is not long enough to be valid and it will not be saved. "
+                  "Current mimimum duration for a valid run is {} seconds".format(
+                      MINIMUM_DURATION_FOR_VALID_ENTRY))
 
     def closeEvent(self):
         # nothing to do for the CLI timer
