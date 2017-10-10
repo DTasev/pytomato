@@ -40,25 +40,16 @@ class Entries(object):
         else:
             self.past_entries = []
 
-    def listEntries(self, list_all_entires=False):
+    def listEntries(self):
         """
         :param list_all_entires: List all of the entries regardless of when they were added.
         """
-        today = datetime.datetime.now().strftime("%Y%m%d")
 
-        if not list_all_entires:
-            # filter out all of the entries that are not today
-            self.formattedEntries = filter(lambda entry:
-                                           entry["entry"]["entryEnd"].strftime("%Y%m%d") == today,
-                                           self.past_entries)
-        else:
-            # don't do anything
-            self.formattedEntries = self.past_entries
+        # pretty format the entries
+        self.past_entries = map(lambda entry: self.prettyFormat(entry), self.past_entries)
 
-        self.formattedEntries = map(lambda entry: self.prettyFormat(entry), self.formattedEntries)
-
-        if self.formattedEntries:
-            for i, e in enumerate(self.formattedEntries):
+        if self.past_entries:
+            for i, e in enumerate(self.past_entries):
                 print(i, "-", e)
 
     def prettyFormat(self, entry):
