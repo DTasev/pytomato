@@ -46,7 +46,7 @@ class Entries(object):
         """
 
         # pretty format the entries
-        self.past_entries = map(lambda entry: self.prettyFormat(entry), self.past_entries)
+        self.past_entries = list(map(lambda entry: self.prettyFormat(entry), self.past_entries))
 
         if self.past_entries:
             for i, e in enumerate(self.past_entries):
