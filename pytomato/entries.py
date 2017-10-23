@@ -46,10 +46,10 @@ class Entries(object):
         """
 
         # pretty format the entries
-        self.past_entries = list(map(lambda entry: self.prettyFormat(entry), self.past_entries))
+        pretty_entires = list(map(lambda entry: self.prettyFormat(entry), self.past_entries))
 
-        if self.past_entries:
-            for i, e in enumerate(self.past_entries):
+        if pretty_entires:
+            for i, e in enumerate(pretty_entires):
                 print(i, "-", e)
 
     def prettyFormat(self, entry):
@@ -75,6 +75,7 @@ class Entries(object):
             print("File not found, nothing is changed.")
 
     def add(self, startDateTime, endDateTime, elapsedTime, targetTime):
+        print("List state b4 append", self.past_entries)
         self.past_entries.append(
             {
                 "name": self.run_name,
@@ -88,6 +89,7 @@ class Entries(object):
                 }
             }
         )
+        print("List state after append", self.past_entries)
 
     def ensure_directory_exists(self):
         if not os.path.isdir(self.project_directory):
