@@ -1,6 +1,6 @@
 import datetime
 import os
-import pickle
+import json
 
 from pytomato.conf import (GIT_EXECUTABLE_PATH, GIT_REMOTE_REPOSITORY_URI,
                            PROJECT_EXTENSION, PYTOMATO_PROJECTS_DIR)
@@ -35,7 +35,7 @@ class Entries(object):
 
         if os.path.isfile(self.timer_pickle_file):
             print("Found existing file, loading entries")
-            self.past_entries = pickle.load(open(self.timer_pickle_file, 'rb'))
+            self.past_entries = json.load(open(self.timer_pickle_file, 'r'))
             print(len(self.past_entries), "entries loaded in total.")
         else:
             self.past_entries = []
@@ -56,8 +56,8 @@ class Entries(object):
         return "{} T:{} S: {} - {} elapsed: {}, target: {}min".format(
                entry["name"],
                entry["type"],
-               entry["entry"]["entryStart"].strftime("%Y-%m-%d %H:%M"),
-               entry["entry"]["entryEnd"].strftime("%H:%M"),
+               entry["entry"]["entryStart"],
+               entry["entry"]["entryEnd"][-8:],
                formatToHHMM(entry["entry"]["elapsedTime"]),
                formatToHHMM(entry["entry"]["targetTime"]))
 
@@ -75,21 +75,20 @@ class Entries(object):
             print("File not found, nothing is changed.")
 
     def add(self, startDateTime, endDateTime, elapsedTime, targetTime):
-        print("List state b4 append", self.past_entries)
+        string_format = "%Y-%m-%dT%H:%M:%S"
         self.past_entries.append(
             {
                 "name": self.run_name,
                 "type": self.timer.runType,
                 "entry":
                 {
-                    "entryStart": startDateTime,
-                    "entryEnd": endDateTime,
+                    "entryStart": startDateTime.strftime(string_format),
+                    "entryEnd": endDateTime.strftime(string_format),
                     "elapsedTime": elapsedTime,
                     "targetTime": targetTime
                 }
             }
         )
-        print("List state after append", self.past_entries)
 
     def ensure_directory_exists(self):
         if not os.path.isdir(self.project_directory):
@@ -97,15 +96,14 @@ class Entries(object):
 
     def save(self):
         self.ensure_directory_exists()
-
         # don't save in original file, save in a backup copy
-        pickle.dump(self.past_entries, open(self.backup_timer_pickle_file, 'wb'))
+        json.dump(self.past_entries, open(self.backup_timer_pickle_file, 'w'), indent=4)
         # then overwrite the original
         os.replace(self.backup_timer_pickle_file, self.timer_pickle_file)
 
         self.backup_entries(self.run_name)
 
-    def deleteEntry(self, id):
+    def delete_entry(self, id):
         print("List length before removal:", len(self.past_entries))
         try:
             print("Removing entry", id, ":", self.prettyFormat(self.past_entries[id]))
@@ -113,7 +111,7 @@ class Entries(object):
 
         except IndexError:
             print("Could not find entry. Nothing is changed")
-        
+
         print("List length after removal:", len(self.past_entries))
 
     def backup_entries(self, name):

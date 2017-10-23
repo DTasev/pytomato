@@ -36,7 +36,7 @@ class TimerTest(unittest.TestCase):
         timer.entries = entries_mock
 
         timer.run()
-        entries_mock.deleteEntry.assert_called_once()
+        entries_mock.delete_entry.assert_called_once()
         entries_mock.listEntries.assert_called()
         entries_mock.save.assert_called_once()
 

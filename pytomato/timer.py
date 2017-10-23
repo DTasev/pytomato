@@ -33,7 +33,7 @@ class Timer(object):
 
         # check if not none, because single integers get cast to booleans..
         if self.parameters.delete is not None:
-            self.entries.deleteEntry(self.parameters.delete)
+            self.entries.delete_entry(self.parameters.delete)
             print("List state after deletion")
             self.entries.listEntries()
             self.entries.save()
@@ -64,7 +64,7 @@ class Timer(object):
             while True:
                 self.updateVisuals(elapsedTime, targetTime, targetTimeString)
                 # sleep for the rest of the 1 second, by subtracting the time spent processing
-                time.sleep(1 - (time.time() - update_compensation_timer))
+                time.sleep(abs(1 - (time.time() - update_compensation_timer)))
                 elapsedTime += 1
 
                 # warn the user only when we're over the target time and we haven't previously notified them
