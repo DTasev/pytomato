@@ -30,12 +30,12 @@ PYTOMATO_PROJECTS_DIR = os.path.expanduser("~/pytomato_entries")
 DEFAULT_PROJECT_NAME = "default"
 
 # The extension of the file.
-PROJECT_EXTENSION = ".tomato"
+PROJECT_EXTENSION = ".json"
 
 # Git executable that will be used to run the git commands
 # This can be a full path to the git executable such as C:\Program Files\Git\git.exe
 # Just keep the R in front so that python reads it as a literal string
-GIT_EXECUTABLE_PATH = R"git"
+GIT_EXECUTABLE_PATH = ""
 
 # The repository used for storing the entry files.
 # The one already here is a test repostitory and you won't have push access to it.

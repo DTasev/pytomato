@@ -11,11 +11,11 @@ from pytomato.utility import formatToHHMM
 class Timer(object):
     def __init__(self, parameters: RunParameters) -> None:
         self.run_name = parameters.name
-        self.runType = parameters.runType
+        self.run_type = parameters.run_type
         self.project_name = parameters.project_name
         self.parameters = parameters
 
-        self.entries = entries.Entries(self, self.run_name, self.project_name, parameters.force_upload)
+        self.entries = entries.Entries(self.run_type, self.run_name, self.project_name)
         self.notify_string = None
         self.soundboard = SoundBoard(parameters.mute)
 
@@ -41,13 +41,13 @@ class Timer(object):
 
         if self.parameters.force_upload:
             # The parameter is set on initialisation, we only need to call save and it will be upload
-            self.entries.save()
+            self.entries.save(self.parameters.force_upload)
             return
 
         # convert to minutes
         targetTime = self.parameters.duration
 
-        self.createMessagesForRun(self.runType, targetTime)
+        self.create_messages_for_run(self.run_type, targetTime)
 
         print("Project:", self.project_name)
         print("Entry name:", self.run_name)
@@ -107,13 +107,13 @@ class Timer(object):
 
         self.notifyUser()
 
-    def createMessagesForRun(self, runType, targetTime):
+    def create_messages_for_run(self, run_type, targetTime):
         # note: the strings below are intended to have empty spaces, to make sure they overwrite the whole line
         # because the print in the while loop uses \r to rewrite the line
-        if runType == BREAK_TYPE:
+        if run_type == BREAK_TYPE:
             self.notify_string = "Your break was {0} minutes long and is now over!         ".format(targetTime // 60)
 
-        elif runType == TOMATO_TYPE:
+        elif run_type == TOMATO_TYPE:
             self.notify_string = "Going Overtime! You should take a {0} break.             ".format(
                 "5 minute" if targetTime <= SHORT_TOMATO_DURATION else "15 minute")
 

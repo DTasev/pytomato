@@ -9,19 +9,16 @@ from pytomato.utility import formatToHHMM
 
 
 class Entries(object):
-    def __init__(self, timer, run_name, project_name, force_upload):
+    def __init__(self, run_type, run_name, project_name):
         """
         :param timer: The timer object
         :param project_name: This will be used as the file name inside the projects directory.
         """
-        self.timer = timer
+        self.run_type = run_type
         self.run_name = run_name
-        self.formattedEntries = None
 
         self.project_name = project_name + PROJECT_EXTENSION
         self.project_directory = os.path.expanduser(PYTOMATO_PROJECTS_DIR)
-
-        self.force_upload = force_upload
 
         self.timer_pickle_file = os.path.join(self.project_directory, self.project_name)
         # this is used to save first and then overwrite the original to not corrupt the file on save
@@ -79,7 +76,7 @@ class Entries(object):
         self.past_entries.append(
             {
                 "name": self.run_name,
-                "type": self.timer.runType,
+                "type": self.run_type,
                 "entry":
                 {
                     "entryStart": startDateTime.strftime(string_format),
@@ -94,14 +91,14 @@ class Entries(object):
         if not os.path.isdir(self.project_directory):
             os.mkdir(self.project_directory)
 
-    def save(self):
+    def save(self, force_upload):
         self.ensure_directory_exists()
         # don't save in original file, save in a backup copy
         json.dump(self.past_entries, open(self.backup_timer_pickle_file, 'w'), indent=4)
         # then overwrite the original
         os.replace(self.backup_timer_pickle_file, self.timer_pickle_file)
 
-        self.backup_entries(self.run_name)
+        self.backup_entries(self.run_name, force_upload)
 
     def delete_entry(self, id):
         print("List length before removal:", len(self.past_entries))
@@ -114,5 +111,5 @@ class Entries(object):
 
         print("List length after removal:", len(self.past_entries))
 
-    def backup_entries(self, name):
-        self.gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")), self.force_upload)
+    def backup_entries(self, name, force_upload):
+        self.gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")), force_upload)

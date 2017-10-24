@@ -30,7 +30,7 @@ def _set_up_break_or_tomato(parameters: RunParameters, args: ArgumentParser,
     else:
         parameters.name = default_name
 
-    parameters.runType = run_type
+    parameters.run_type = run_type
 
     return parameters
 

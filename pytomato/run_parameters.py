@@ -2,7 +2,7 @@ from pytomato.conf import DEFAULT_TOMATO_NAME, SHORT_TOMATO_DURATION, DEFAULT_PR
 
 
 class RunParameters:
-    runType = ""
+    run_type = ""
     name = DEFAULT_TOMATO_NAME
     duration = SHORT_TOMATO_DURATION
     clean = False
