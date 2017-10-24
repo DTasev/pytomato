@@ -57,7 +57,7 @@ def set_up_run_parameters(parameters: RunParameters, args: ArgumentParser) -> Ru
         parameters.project_name = args.project  # type: ignore
 
     parameters.clean = args.clean  # type: ignore
-    parameters.listAndExit = args.list  # type: ignore
+    parameters.list_and_exit = args.list  # type: ignore
     parameters.delete = args.delete  # type: ignore
     parameters.mute = args.mute  # type: ignore
     parameters.force_upload = args.upload  # type: ignore

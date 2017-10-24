@@ -13,6 +13,7 @@ class Timer(object):
         self.run_name = parameters.name
         self.run_type = parameters.run_type
         self.project_name = parameters.project_name
+        self.force_upload = parameters.force_upload
         self.parameters = parameters
 
         self.entries = entries.Entries(self.run_type, self.run_name, self.project_name)
@@ -27,7 +28,7 @@ class Timer(object):
         self.entries.initialise()
         self.entries.listEntries()
 
-        if self.parameters.listAndExit:
+        if self.parameters.list_and_exit:
             # List all entries if list is specified
             return
 
@@ -39,9 +40,9 @@ class Timer(object):
             self.entries.save()
             return
 
-        if self.parameters.force_upload:
+        if self.force_upload:
             # The parameter is set on initialisation, we only need to call save and it will be upload
-            self.entries.save(self.parameters.force_upload)
+            self.entries.save(self.force_upload)
             return
 
         # convert to minutes

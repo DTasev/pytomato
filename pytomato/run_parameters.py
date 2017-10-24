@@ -6,7 +6,7 @@ class RunParameters:
     name = DEFAULT_TOMATO_NAME
     duration = SHORT_TOMATO_DURATION
     clean = False
-    listAndExit = False
+    list_and_exit = False
     delete = None
     project_name = DEFAULT_PROJECT_NAME
     mute = False

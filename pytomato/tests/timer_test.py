@@ -19,7 +19,7 @@ class TimerTest(unittest.TestCase):
 
     def test_listAndExit(self):
         run_par = RunParameters()
-        run_par.listAndExit = True
+        run_par.list_and_exit = True
         timer = Timer(run_par)
         entries_mock = mock.create_autospec(Entries)
         timer.entries = entries_mock

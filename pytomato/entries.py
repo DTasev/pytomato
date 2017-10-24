@@ -43,13 +43,14 @@ class Entries(object):
         """
 
         # pretty format the entries
-        pretty_entires = list(map(lambda entry: self.prettyFormat(entry), self.past_entries))
+        pretty_entires = list(map(lambda entry: self.pretty_format(entry), self.past_entries))
 
         if pretty_entires:
             for i, e in enumerate(pretty_entires):
                 print(i, "-", e)
 
-    def prettyFormat(self, entry):
+    @staticmethod
+    def pretty_format(entry):
         return "{} T:{} S: {} - {} elapsed: {}, target: {}min".format(
                entry["name"],
                entry["type"],
@@ -71,7 +72,7 @@ class Entries(object):
         except:
             print("File not found, nothing is changed.")
 
-    def add(self, startDateTime, endDateTime, elapsedTime, targetTime):
+    def add(self, start_datetime, end_datetime, elapsed_time, target_time):
         string_format = "%Y-%m-%dT%H:%M:%S"
         self.past_entries.append(
             {
@@ -79,10 +80,10 @@ class Entries(object):
                 "type": self.run_type,
                 "entry":
                 {
-                    "entryStart": startDateTime.strftime(string_format),
-                    "entryEnd": endDateTime.strftime(string_format),
-                    "elapsedTime": elapsedTime,
-                    "targetTime": targetTime
+                    "entryStart": start_datetime.strftime(string_format),
+                    "entryEnd": end_datetime.strftime(string_format),
+                    "elapsedTime": elapsed_time,
+                    "targetTime": target_time
                 }
             }
         )
@@ -91,7 +92,7 @@ class Entries(object):
         if not os.path.isdir(self.project_directory):
             os.mkdir(self.project_directory)
 
-    def save(self, force_upload):
+    def save(self, force_upload=False):
         self.ensure_directory_exists()
         # don't save in original file, save in a backup copy
         json.dump(self.past_entries, open(self.backup_timer_pickle_file, 'w'), indent=4)
@@ -101,15 +102,12 @@ class Entries(object):
         self.backup_entries(self.run_name, force_upload)
 
     def delete_entry(self, id):
-        print("List length before removal:", len(self.past_entries))
         try:
-            print("Removing entry", id, ":", self.prettyFormat(self.past_entries[id]))
+            print("Removing entry", id, ":", self.pretty_format(self.past_entries[id]))
             del self.past_entries[id]
 
         except IndexError:
             print("Could not find entry. Nothing is changed")
-
-        print("List length after removal:", len(self.past_entries))
 
     def backup_entries(self, name, force_upload):
         self.gh.upload("{} {}".format(name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")), force_upload)
