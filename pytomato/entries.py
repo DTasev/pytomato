@@ -80,7 +80,7 @@ class Entries(object):
         except:
             print("File not found, nothing is changed.")
 
-    def add(self, start_datetime, end_datetime, elapsed_time, target_time):
+    def add(self, start_datetime, end_datetime, target_time):
         self.past_entries.append(
             {
                 "name": self.run_name,

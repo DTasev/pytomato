@@ -10,85 +10,33 @@ from pytomato.utility import formatToHHMM
 
 class Timer(object):
     def __init__(self, parameters: RunParameters) -> None:
-        self.run_name = parameters.name
-        self.run_type = parameters.run_type
-        self.project_name = parameters.project_name
-        self.force_upload = parameters.force_upload
-        self.parameters = parameters
-
-        self.entries = entries.Entries(self.run_type, self.run_name, self.project_name)
+        self.entries = entries.Entries(parameters.run_type, parameters.name, parameters.project_name)
         self.notify_string = None
         self.soundboard = SoundBoard(parameters.mute)
 
-    def run(self):
-        if self.parameters.clean:
-            self.entries.clean()
-            return
-
+    def init(self, run_type, target_time):
         self.entries.initialise()
+        self.create_messages_for_run(run_type, target_time)
+
+    def list_entries(self):
         self.entries.listEntries()
 
-        if self.parameters.list_and_exit:
-            # List all entries if list is specified
-            return
+    def clean(self):
+        self.entries.clean()
 
-        # check if not none, because single integers get cast to booleans..
-        if self.parameters.delete is not None:
-            self.entries.delete_entry(self.parameters.delete)
-            print("List state after deletion")
-            self.entries.listEntries()
-            self.entries.save()
-            return
+    def delete(self, entry):
+        self.entries.delete_entry(self.parameters.delete)
+        print("List state after deletion")
+        self.entries.listEntries()
+        self.entries.save()
 
-        if self.force_upload:
-            # The parameter is set on initialisation, we only need to call save and it will be upload
-            self.entries.save(self.force_upload)
-            return
+    def force_upload(self):
+        self.entries.save(True)
+        return
 
-        # convert to minutes
-        targetTime = self.parameters.duration
-
-        self.create_messages_for_run(self.run_type, targetTime)
-
-        print("Project:", self.project_name)
-        print("Entry name:", self.run_name)
-        print("Target time", targetTime // 60, "minutes")
-
-        startDateTime = datetime.datetime.now()
-        elapsedTime = 0
-        userNotified = False
-
-        targetTimeString = formatToHHMM(targetTime)
-        # start the initial update timer
-        update_compensation_timer = time.time()
-        try:
-            while True:
-                self.updateVisuals(elapsedTime, targetTime, targetTimeString)
-                # sleep for the rest of the 1 second, by subtracting the time spent processing
-                time.sleep(abs(1 - (time.time() - update_compensation_timer)))
-                elapsedTime += 1
-
-                # warn the user only when we're over the target time and we haven't previously notified them
-                if not userNotified and elapsedTime >= targetTime:
-                    self.notify()
-                    userNotified = True
-                # update the update timer after everything has been completed timer
-                update_compensation_timer = time.time()
-
-        # if anything happens try to end and save out the file
-        # note: the strings below are intended to have empty spaces, to make sure they overwrite the whole line
-        # because the print in the while loop uses \r to rewrite the line
-        except KeyboardInterrupt:
-            print("Interripting timer and saving entry.                  ")
-        except SystemExit:
-            print("System exiting, saving entry.                         ")
-
-        endDateTime = datetime.datetime.now()
-        self.closeEvent()
-
-        # only save if the run is long enough
-        if elapsedTime > MINIMUM_DURATION_FOR_VALID_ENTRY:
-            self.entries.add(startDateTime, endDateTime, elapsedTime, targetTime)
+    def process_entry(self, start_datetime, end_datetime, elapsed_time, target_time):
+        if elapsed_time > MINIMUM_DURATION_FOR_VALID_ENTRY:
+            self.entries.add(start_datetime, end_datetime, target_time)
             self.entries.save()
         else:
             print("Run is not long enough to be valid and it will not be saved. "
