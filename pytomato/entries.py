@@ -20,6 +20,8 @@ class Entries(object):
         self.project_name = project_name + PROJECT_EXTENSION
         self.project_directory = os.path.expanduser(PYTOMATO_PROJECTS_DIR)
 
+        self.date_string_format = "%Y-%m-%dT%H:%M:%S"
+
         self.timer_pickle_file = os.path.join(self.project_directory, self.project_name)
         # this is used to save first and then overwrite the original to not corrupt the file on save
         self.backup_timer_pickle_file = self.timer_pickle_file + ".bak"
@@ -49,14 +51,20 @@ class Entries(object):
             for i, e in enumerate(pretty_entires):
                 print(i, "-", e)
 
-    @staticmethod
-    def pretty_format(entry):
+    def pretty_format(self, entry):
+        # calculate the duration, this allows the user to change the start/end times
+        # and the elapsed time will be correct
+        entry_start = entry["entry"]["entryStart"]
+        entry_end = entry["entry"]["entryEnd"]
+        elapsed = datetime.datetime.strptime(entry_end, self.date_string_format) - \
+            datetime.datetime.strptime(entry_start, self.date_string_format)
+
         return "{} T:{} S: {} - {} elapsed: {}, target: {}min".format(
                entry["name"],
                entry["type"],
-               entry["entry"]["entryStart"],
-               entry["entry"]["entryEnd"][-8:],
-               formatToHHMM(entry["entry"]["elapsedTime"]),
+               entry_start,
+               entry_end[-8:],
+               str(elapsed),
                formatToHHMM(entry["entry"]["targetTime"]))
 
     def clean(self):
@@ -73,16 +81,14 @@ class Entries(object):
             print("File not found, nothing is changed.")
 
     def add(self, start_datetime, end_datetime, elapsed_time, target_time):
-        string_format = "%Y-%m-%dT%H:%M:%S"
         self.past_entries.append(
             {
                 "name": self.run_name,
                 "type": self.run_type,
                 "entry":
                 {
-                    "entryStart": start_datetime.strftime(string_format),
-                    "entryEnd": end_datetime.strftime(string_format),
-                    "elapsedTime": elapsed_time,
+                    "entryStart": start_datetime.strftime(self.date_string_format),
+                    "entryEnd": end_datetime.strftime(self.date_string_format),
                     "targetTime": target_time
                 }
             }
